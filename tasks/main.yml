@@ -1,0 +1,33 @@
+# Installs and configures Artifactory.
+---
+
+- include: prerequisites.yml
+
+- name: Make sure tomcat is stopped
+  service:
+    name: "{{ artifactory_tomcat_daemon }}"
+    state: stopped
+
+- name: Wait until tomcat is down
+  wait_for:
+    port: "{{ artifactory_tomcat_http_port }}"
+    state: stopped
+
+- name: Include OS specific vars
+  include_vars: "RedHat.yml"
+  when: ansible_os_family == 'RedHat'
+
+- include: "setup-RedHat.yml"
+  when: ansible_os_family == 'RedHat'
+
+- include: setup.yml
+
+- name: Make sure tomcat is started
+  service:
+    name: "{{ artifactory_tomcat_daemon }}"
+    state: started
+
+- name: Wait until tomcat is up
+  wait_for:
+    port: "{{ artifactory_tomcat_http_port }}"
+    state: started

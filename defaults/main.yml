@@ -1,0 +1,20 @@
+# Default varaibles, may be overridden by depending roles.
+---
+
+# The assumed tomcat daemon name
+artifactory_tomcat_daemon: "tomcat"
+
+# The assumed tomcat daemon user
+artifactory_tomcat_daemon_user: "tomcat"
+
+# The assumed tomcat http port
+artifactory_tomcat_http_port: "8080"
+
+# The assumed tomcat home
+artifactory_tomcat_base_dir: "/usr/share/tomcat"
+
+# Base URL to the Artifactory repo
+artifactory_repo_base_url: "https://bintray.com"
+
+# The default Artifactory version
+artifactory_version: "3.5.2.1"

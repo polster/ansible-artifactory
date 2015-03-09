@@ -1,0 +1,17 @@
+# Variables that shall not be overridden.
+---
+
+# The Artifactory home where all config will be stored and maintained
+artifactory_home_dir: "/opt/artifactory"
+
+# The download file
+artifactory_download_file: "artifactory-{{ artifactory_version }}"
+artifactory_download_file_zip: "{{ artifactory_download_file }}.zip"
+
+# Download URL for the Artifactory ZIP file
+artifactory_download_url: "{{ artifactory_repo_base_url }}/artifact/download/jfrog/artifactory/{{ artifactory_download_file_zip }}"
+
+# Target dir for the download
+artifactory_download_target_dir: "/tmp/artifactory-install"
+
+artifactory_tomcat_version_major_minimal: 8

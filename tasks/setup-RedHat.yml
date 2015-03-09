@@ -1,0 +1,8 @@
+# OS specific setup
+---
+
+- name: Ensure all yum dependency packages are present
+  yum:
+    name: "{{ item.package }}"
+    state: present
+  with_items: artifactory_dependency_packages

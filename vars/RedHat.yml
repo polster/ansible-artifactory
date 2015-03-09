@@ -1,0 +1,6 @@
+# OS specific variables that shall not be overridden.
+---
+
+# Required yum packages for this role
+artifactory_dependency_packages:
+  - { package: "unzip" }

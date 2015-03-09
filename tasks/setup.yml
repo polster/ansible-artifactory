@@ -1,0 +1,46 @@
+# Installs Artifactory.
+---
+
+- name: Make sure the temp install dir exists
+  file:
+    path: "{{ artifactory_download_target_dir }}"
+    state: directory
+
+- name: Make sure the Artifactory home dir exists
+  file:
+    path: "{{ artifactory_home_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ artifactory_tomcat_daemon_user }}"
+    group: "{{ artifactory_tomcat_daemon_user }}"
+
+- name: Delete deployed Artifactory
+  command: "rm -rf {{ artifactory_tomcat_base_dir }}/webapps/artifactory*"
+
+- name: Download the Artifactory package
+  get_url:
+    url: "{{ artifactory_download_url }}"
+    dest: "{{ artifactory_download_target_dir }}"
+
+- name: Unarchive the downloaded file
+  unarchive:
+    src: "{{ artifactory_download_target_dir }}/{{ artifactory_download_file_zip }}"
+    dest: "{{ artifactory_download_target_dir }}/"
+    creates: "{{ artifactory_download_target_dir }}/{{ artifactory_download_file }}"
+    copy: no
+
+- name: Deploy the Artifactory WAR
+  command: "cp {{ artifactory_download_target_dir }}/{{ artifactory_download_file }}/webapps/artifactory.war {{ artifactory_tomcat_base_dir }}/webapps/"
+
+- name: Configure Artifactory home env var
+  lineinfile:
+    dest: "{{ artifactory_tomcat_base_dir }}/bin/setenv.sh"
+    line: "export ARTIFACTORY_HOME='{{ artifactory_home_dir }}'"
+    regexp: "export ARTIFACTORY_HOME"
+    state: present
+    insertafter: "EOF"
+
+- name: Clean-up
+  file:
+    path: "{{ artifactory_download_target_dir }}"
+    state: absent

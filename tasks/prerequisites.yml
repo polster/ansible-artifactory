@@ -1,0 +1,27 @@
+# Makes sure the prerequisites for this role are met.
+---
+
+- name: Register tomcat home status
+  stat:
+    path: "{{ artifactory_tomcat_base_dir }}"
+  register: tomcat_home_status
+  changed_when: False
+
+- name: Check if tomcat home exists
+  fail:
+    msg: "Tomcat home does not exist, make sure tomcat is installed or update artifactory_tomcat_base_dir"
+  when: tomcat_home_status.stat.isdir is not defined
+  changed_when: False
+
+- name: Register tomcat version
+  shell: "java -cp {{ artifactory_tomcat_base_dir }}/lib/catalina.jar org.apache.catalina.util.ServerInfo | grep 'Server version' | cut -d '/' -f2"
+  register: tomcat_version
+
+- name: Create tomcat_version_major variable
+  set_fact:
+    tomcat_version_major: "{{ tomcat_version.stdout.split('.')[0] }}"
+
+- name: Check if supported tomcat version
+  fail:
+    msg: "Tomcat is installed but its version is not supported. Minimal major version: {{ artifactory_tomcat_version_major_minimal }}"
+  when: "tomcat_version_major|int < {{ artifactory_tomcat_version_major_minimal }}"
